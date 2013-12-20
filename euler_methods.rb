@@ -868,9 +868,23 @@ def added_combinations(array)
 end
 
 
+# Takes the biomial coefficient of n and k.
+
+def binomial_coefficient(n, k)
+  product = 1
+  # Uses multiplicative formula to derive.
+  1.upto(k) do |i|
+    product *= ((n - (k - i)) / i.to_f) # Use float to deal with non-integer division.
+  end
+  product.to_i
+end
+
+
+
+
 
 # ruby euler_methods.rb
-# skipped : 27, 31
+# skipped : 27, 31, 51
 # not working : 23! (time), 24 (time), 41 (time...), 43 (time...),
 # 44 (time...), 47 (time), 18! (head hurts) 50 (time)
 
