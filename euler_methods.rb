@@ -597,6 +597,16 @@ def rec_period(d)
 end
 
 
+# Finds the sum of each digits of an integer.
+
+def digit_sum_of(number)
+  digits = number.to_s.split("")
+  sum = 0
+  digits.each {|i| sum += i.to_i}
+  sum
+end 
+
+
 ## Finds the sum of each digit of an integer to the power of n.
 #
 # EXAMPLE
