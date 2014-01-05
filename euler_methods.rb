@@ -880,7 +880,120 @@ def binomial_coefficient(n, k)
 end
 
 
+# Takes a string like "2H 2D 4C 4D 4S" and returns the hand and highest card(s).
 
+def poker_hand(cards)
+  cards_array = cards.delete(" ").split("")
+  # Convert Jack, Queen, King and Ace into numbers and changes 10 from "1", "0" to "10"
+  pictures = {  "1" => "10",
+  				"J" => "11",
+  				"Q" => "12",
+  				"K" => "13",
+  				"A" => "14" }
+  cards_array = cards_array.map do |i|
+    if pictures[i]
+      if pictures[i] == "0"
+        nil
+      end
+      pictures[i]
+    else
+      i
+    end
+  end
+  # Deletes spare "0" emanating from the "10"
+  cards_array.delete("0")
+  p cards_array
+  
+  # Finds highest card
+  highest = 0
+  (0..8).step(2) do |i|
+    if cards_array[i].to_i > highest then highest = cards_array[i].to_i end
+  end
+  
+  # Test "Four of a kind"
+  check = []
+  (0..8).step(2) do |i|
+    check << cards_array[i]
+    if check.count(cards_array[i]) == 4
+      return "Four of a kind" + "-" + cards_array[i]
+    end
+  end
+  
+  # Test "Flush" - checks that the cards are all same as first card
+  check = []
+  (1..9).step(2) do |i|
+    if cards_array[i] == cards_array[1]
+      if i == 9 then return "Flush" + "-" + highest.to_s end
+    else
+      break
+    end
+  end
+  
+  # Test "Straight"
+  (0..8).step(2) do |i|
+    last_card = 0
+    if i == 0
+      last_card = cards_array[i]
+      puts last_card
+      next
+    end
+    puts "SASAS #{last_card}"
+    puts "SADSADS #{cards_array[i]}"
+    if cards_array[i].to_i != last_card.to_i + 1
+      break
+    end
+    last_card = cards_array[i]
+    if i == 8 then return "Straight" + "-" + highest.to_s end
+  end
+  
+  # Test "Three of a kind"
+  check = []
+  (0..8).step(2) do |i|
+    check << cards_array[i]
+    if check.count(cards_array[i]) == 3
+      return "Three of a kind" + "-" + cards_array[i]
+    end
+  end
+  
+  # Test "Two Pair"
+  check = []
+  n = 0
+  (0..8).step(2) do |i|
+    check << cards_array[i]
+    if check.count(cards_array[i]) == 2
+      n += 1
+      if n == 2
+        return "Two Pair" + "-" + cards_array[i]
+      end
+    end
+  end
+  
+  # Test "Pair"
+  check = []
+  (0..8).step(2) do |i|
+    check << cards_array[i]
+    if check.count(cards_array[i]) == 2
+      return "Pair" + "-" + cards_array[i]
+    end
+  end
+  
+  "High Card" + "-" + highest.to_s
+end
+
+# #fourofakind
+# puts poker_hand("2D AH AC AS AD")
+# #flush
+# puts poker_hand("2D 5D 9D JD AD")
+# #straight
+# puts poker_hand("4H 5S 6D 7S 8S")
+# #threeofakind
+# puts poker_hand("9H 9S 9D JS AS")
+# #twopair
+# puts poker_hand("2D 2S 9D 9C KD")
+# #pair
+# puts poker_hand("2D 10H 10D KD AS")
+# #highpair
+# puts poker_hand("2D 5D 9D JC AD")
 
 
 # ruby euler_methods.rb
