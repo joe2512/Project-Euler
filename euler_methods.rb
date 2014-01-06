@@ -1006,6 +1006,36 @@ end
 # puts poker_hand("2D 5D 9D JC AD")
 
 
+# Works out the continued fraction of a value n returning a string like "41/29"
+# n - √ n = 1 + 1/(n + 1/(n + 1/(n + ... ))) = ...
+# m is number of iterations.
+
+def continued_fraction(m, n)
+  if m == 1
+    return "1/1"
+  elsif m == 2
+    return "#{n + 1}/#{n}"
+  end
+#   a is numerator, b is denominator
+  a = n ** 2 + 1
+  b = n
+#   iterates by reversing a and b then adding 2 each time ( allowing for the fraction)
+  (m - 2).times do
+    c = a
+    a = b
+    b = c
+    a += b * 2
+  end
+  a -= b
+  "#{a}/#{b}"
+end
+    
+puts continued_fraction(2, 2)
+puts continued_fraction(3, 2)
+puts continued_fraction(4, 2)
+puts continued_fraction(5, 2)
+puts continued_fraction(6, 2)
+
 # ruby euler_methods.rb
 # skipped : 27, 31, 51
 # not working : 23! (time), 24 (time), 41 (time...), 43 (time...),
