@@ -1030,11 +1030,21 @@ def continued_fraction(m, n)
   "#{a}/#{b}"
 end
     
-puts continued_fraction(2, 2)
-puts continued_fraction(3, 2)
-puts continued_fraction(4, 2)
-puts continued_fraction(5, 2)
-puts continued_fraction(6, 2)
+# puts continued_fraction(2, 2)
+# puts continued_fraction(3, 2)
+# puts continued_fraction(4, 2)
+# puts continued_fraction(5, 2)
+# puts continued_fraction(6, 2)
+
+
+
+
+
+
+
+
+
+
 
 # ruby euler_methods.rb
 # skipped : 27, 31, 51
