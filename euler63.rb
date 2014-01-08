@@ -16,16 +16,23 @@ def euler63(n)
   
   1.upto(n) do |i|
     j = 0
-    while j < 50
-      j++
-      puts j
+#   this loop checks for j = 1 until it is too big whether the length of i ** j equals j  
+    while
+      j += 1
+      if (i ** j).to_s.length == j
+        puts (i ** j).to_s.length
+        count += 1
+      elsif (i ** j).to_s.length < j
+        break
+      end
     end
   end
   count
 end
 
 
-n = 1000
+# no number n >= 10 can fulfill the criteria so we iterate from 1-9
+n = 9 
 
 answer = euler63(n) 
 
