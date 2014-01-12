@@ -1053,9 +1053,9 @@ def lowest_common_multiple2(a, b)
   (a / greatest_common_divisor(a, b)) * b
 end
 
-puts lowest_common_multiple2(18, 52)
-puts lowest_common_multiple2(4, 9)
-puts lowest_common_multiple2(5, 10)
+# puts lowest_common_multiple2(18, 52)
+# puts lowest_common_multiple2(4, 9)
+# puts lowest_common_multiple2(5, 10)
 
 
 
@@ -1096,3 +1096,5 @@ puts lowest_common_multiple2(5, 10)
 # PARAMETER(s):
 # RETURNS:
 # EXAMPLE:
+
+# look at other eulers on github and see what they put at the top of the page
