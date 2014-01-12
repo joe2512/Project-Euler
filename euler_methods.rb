@@ -106,7 +106,7 @@ end
 
 ## 4 ##
 
-# Finds the lowest common factor of n numbers.
+# Finds the lowest common multiple of n numbers.
 # 
 # EXAMPLE
 # 
@@ -115,7 +115,7 @@ end
 # Returns 60.
 
 
-def lowest_common_factor(*n)
+def lowest_common_multiple(*n)
   lcf_factors = []
   
   for i in n
@@ -1030,16 +1030,32 @@ def continued_fraction(m, n)
   "#{a}/#{b}"
 end
     
-# puts continued_fraction(2, 2)
-# puts continued_fraction(3, 2)
-# puts continued_fraction(4, 2)
-# puts continued_fraction(5, 2)
-# puts continued_fraction(6, 2)
+## Uses the (very fast) Euclidean algorithm for findind the greatest common divisor of
+## two numbers.
 
+def greatest_common_divisor(a, b)
+  if a > b
+  	c = a
+  	a = b
+  	b = c
+  end
+  while
+  	c = b % a
+  	if c == 0 then return a end
+  	b = a
+  	a = c
+  end
+end
 
+## Second lowest common multiple function. Uses a faster algorithm.
 
+def lowest_common_multiple2(a, b)
+  (a / greatest_common_divisor(a, b)) * b
+end
 
-
+puts lowest_common_multiple2(18, 52)
+puts lowest_common_multiple2(4, 9)
+puts lowest_common_multiple2(5, 10)
 
 
 
