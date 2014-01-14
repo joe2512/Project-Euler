@@ -110,7 +110,7 @@ end
 # 
 # EXAMPLE
 # 
-# lowest_common_factor(4,5,6)
+# lowest_common_multiple(4,5,6)
 # 
 # Returns 60.
 
@@ -233,7 +233,7 @@ def pythag_triples(n)
 
   while
     for j in (1..i)  
-      if (i - j) % 2 == 1 and lowest_common_factor(i, j) == i * j
+      if (i - j) % 2 == 1 and lowest_common_multiple(i, j) == i * j
         a = i ** 2 - j ** 2
         b = 2 * i * j
         c = i ** 2 + j ** 2
@@ -766,6 +766,7 @@ def all_pythag_triples(n, p)
 end
 
 
+
 # Returns a string of the natural numbers concatenated together up to n.
 
 
@@ -895,7 +896,7 @@ end
 def poker_hand(cards)
   cards_array = cards.delete(" ").split("")
   # Convert Jack, Queen, King and Ace into numbers and changes 10 from "1", "0" to "10"
-  pictures = {  "1" => "10",
+  pictures = {  "T" => "10",
   				"J" => "11",
   				"Q" => "12",
   				"K" => "13",
@@ -912,12 +913,45 @@ def poker_hand(cards)
   end
   # Deletes spare "0" emanating from the "10"
   cards_array.delete("0")
-  p cards_array
+#   p cards_array
   
   # Finds highest card
   highest = 0
   (0..8).step(2) do |i|
     if cards_array[i].to_i > highest then highest = cards_array[i].to_i end
+  end
+  
+  # Test "Straight Flush" and does check for "Straight" and "Flush"
+  straight = false
+  flush = false
+  
+# Flush part  
+  check = []
+  (1..9).step(2) do |i|
+    if cards_array[i] == cards_array[1]
+      if i == 9 then flush = true end
+    else
+      break
+    end
+  end
+
+# Straight part 
+  last_card = 0
+  (0..8).step(2) do |i|
+    if i == 0
+      last_card = cards_array[i]
+      puts last_card
+      next
+    end
+    if cards_array[i].to_i != last_card.to_i + 1
+      break
+    end
+    last_card = cards_array[i]
+    if i == 8 then straight = true end
+  end
+  
+  if straight == true and flush == true 
+    return "Straight Flush" + "-" + highest.to_s
   end
   
   # Test "Four of a kind"
@@ -929,40 +963,39 @@ def poker_hand(cards)
     end
   end
   
-  # Test "Flush" - checks that the cards are all same as first card
+  # Test "Full House" - First tests "Three of a kind", if true, tests the other two cards
+  # if they are a pair.
   check = []
-  (1..9).step(2) do |i|
-    if cards_array[i] == cards_array[1]
-      if i == 9 then return "Flush" + "-" + highest.to_s end
-    else
-      break
-    end
-  end
-  
-  # Test "Straight"
-  (0..8).step(2) do |i|
-    last_card = 0
-    if i == 0
-      last_card = cards_array[i]
-      puts last_card
-      next
-    end
-    puts "SASAS #{last_card}"
-    puts "SADSADS #{cards_array[i]}"
-    if cards_array[i].to_i != last_card.to_i + 1
-      break
-    end
-    last_card = cards_array[i]
-    if i == 8 then return "Straight" + "-" + highest.to_s end
-  end
-  
-  # Test "Three of a kind"
-  check = []
+  toak = false	# toak is Three Of A Kind
+  toak_i = 0
   (0..8).step(2) do |i|
     check << cards_array[i]
     if check.count(cards_array[i]) == 3
-      return "Three of a kind" + "-" + cards_array[i]
+      toak_i = cards_array[i]
+      toak = true
     end
+  end
+  
+  if toak == true
+    check.delete(toak_i.to_s)
+    if check[0] == check[1]
+      return "Full House" + "-" + highest.to_s
+    end
+  end
+    
+  # Test "Flush" - checks that the cards are all same as first card
+  if flush == true 
+    return "Flush" + "-" + highest.to_s
+  end
+  
+  # Test "Straight"
+  if straight == true 
+    return "Straight" + "-" + highest.to_s
+  end
+  
+  # Test "Three of a kind"
+  if toak == true
+    return "Three of a kind" + "-" + toak_i.to_s
   end
   
   # Test "Two Pair"
@@ -987,11 +1020,16 @@ def poker_hand(cards)
     end
   end
   
+  # Default is high card
   "High Card" + "-" + highest.to_s
 end
 
+# #straight flush
+# puts poker_hand("3D 4D 5D 6D 7D")
 # #fourofakind
 # puts poker_hand("2D AH AC AS AD")
+# #full house
+# puts poker_hand("2D 2H 3C 3S 3D")
 # #flush
 # puts poker_hand("2D 5D 9D JD AD")
 # #straight
@@ -1002,8 +1040,48 @@ end
 # puts poker_hand("2D 2S 9D 9C KD")
 # #pair
 # puts poker_hand("2D 10H 10D KD AS")
-# #highpair
+# #highcard
 # puts poker_hand("2D 5D 9D JC AD")
+
+
+## Given two outputs from poker_hand function, returns the winning hand.
+## 1 being first hand, 2 being second hand. Returns 0 if exactly the same.
+
+def poker_compare(hand1, hand2)
+  hands_value = { "Straight Flush" => 10,
+  				"Four of a kind" => 9,
+  				"Full House" => 8,
+  				"Flush" => 7,
+  				"Straight" => 6,
+  				"Three of a kind" => 5,
+  				"Two Pair" => 4,
+  				"Pair" => 3,
+  				"High Card" => 2
+  				}
+
+  hand1_hand = hand1.split("-")[0]
+  hand1_highest = hand1.split("-")[1]
+  hand2_hand = hand2.split("-")[0]
+  hand2_highest = hand2.split("-")[1]
+  
+  if hands_value[hand1_hand] > hands_value[hand2_hand]
+    return 1;
+  elsif hands_value[hand1_hand] < hands_value[hand2_hand]
+    return 2;
+  elsif hands_value[hand1_hand] == hands_value[hand2_hand]
+    if hand1_highest.to_i > hand2_highest.to_i
+      return 1;
+    elsif hand1_highest.to_i < hand2_highest.to_i
+      return 2;
+    elsif hand1_highest.to_i == hand2_highest.to_i
+      return 0;
+    end
+  end
+end
+
+# puts poker_compare("Three of a kind-9", "Two Pair-10")
+# puts poker_compare("Flush-5", "Flush-6")
+# puts poker_compare("Four of a kind-4", "Straight Flush-14")
 
 
 # Works out the continued fraction of a value n returning a string like "41/29"
@@ -1053,11 +1131,122 @@ def lowest_common_multiple2(a, b)
   (a / greatest_common_divisor(a, b)) * b
 end
 
-# puts lowest_common_multiple2(18, 52)
-# puts lowest_common_multiple2(4, 9)
-# puts lowest_common_multiple2(5, 10)
+
+## Finds the number of partitions of a number. Approximation.
+## Same formula discovered  by Hardy and Ramanujan.
+def ramanujan_partition(n)
+  (1 / (4 * n * Math.sqrt(3))) * Math.exp(Math::PI * Math.sqrt(2 * n / 3))
+end
 
 
+
+## Returns true or false if the given number is a triangle number
+
+def is_triangle(n)
+  sol1 = (-1 + Math.sqrt(1 - 4 * (-2 * n))) / 2
+  sol2 = (-1 - Math.sqrt(1 - 4 * (-2 * n))) / 2
+  if sol1 % 1 == 0 or sol2 % 1 == 0
+    return true
+  else
+    return false
+  end
+end
+
+# puts is_triangle(3)
+# puts is_triangle(9)
+# puts is_triangle(12)
+# puts is_triangle(15)
+
+
+## Returns true or false if the given number is a square number
+
+def is_square(n)
+  if Math.sqrt(n) % 1 == 0
+    return true
+  else
+    return false
+  end
+end
+
+## Returns true or false if the given number is a triangle number
+
+def is_pentagon(n)
+  sol1 = (-1 + Math.sqrt(1 ** 2 - 4 * 3 * (-2 * n))) / (2 * 3)
+  sol2 = (-1 - Math.sqrt(1 ** 2 - 4 * 3 * (-2 * n))) / (2 * 3)
+  if sol1 % 1 == 0 or sol2 % 1 == 0
+    return true
+  else
+    return false
+  end
+end
+
+# puts is_pentagon(5)
+# puts is_pentagon(6)
+# puts is_pentagon(22)
+# puts is_pentagon(34)
+
+## Returns true or false if the given number is a triangle number
+
+def is_hexagon(n)
+  sol1 = (1 + Math.sqrt(1 - 4 * 2 * (-1 * n))) / (2 * 2)
+  sol2 = (1 - Math.sqrt(1 - 4 * 2 * (-1 * n))) / (2 * 2)
+  if sol1 % 1 == 0 or sol2 % 1 == 0
+    return true
+  else
+    return false
+  end
+end
+
+# puts is_hexagon(6)
+# puts is_hexagon(9)
+# puts is_hexagon(15)
+# puts is_hexagon(45)
+
+## Returns true or false if the given number is a triangle number
+
+def is_heptagon(n)
+  sol1 = (3 + Math.sqrt(9 - 4 * 5 * (-2 * n))) / (2 * 5)
+  sol2 = (3 - Math.sqrt(9 - 4 * 5 * (-2 * n))) / (2 * 5)
+  if sol1 % 1 == 0 or sol2 % 1 == 0
+    return true
+  else
+    return false
+  end
+end
+
+# puts is_heptagon(18)
+# puts is_heptagon(21)
+# puts is_heptagon(34)
+# puts is_heptagon(55)
+
+## Returns true or false if the given number is a triangle number
+
+def is_octagon(n)
+  sol1 = (2 + Math.sqrt(4 - 4 * 3 * (-1 * n))) / (2 * 3)
+  sol2 = (2 - Math.sqrt(4 - 4 * 3 * (-1 * n))) / (2 * 3)
+  if sol1 % 1 == 0 or sol2 % 1 == 0
+    return true
+  else
+    return false
+  end
+end
+
+# puts is_octagon(8)
+# puts is_octagon(32) ######
+# puts is_octagon(40)
+# puts is_octagon(65)
+
+## Returns true or false if the given number is a triangle number
+
+def is_triangle(n)
+  sol1 = (-b + Math.sqrt(b ** 2 - 4 * a * (-2 * n))) / (2 * a)
+  sol2 = (-b - Math.sqrt(b ** 2 - 4 * a * (-2 * n))) / (2 * a)
+  if sol1 % 1 == 0 or sol2 % 1 == 0
+    return true
+  else
+    return false
+  end
+end
 
 
 
@@ -1098,3 +1287,8 @@ end
 # EXAMPLE:
 
 # look at other eulers on github and see what they put at the top of the page
+
+# problem 80 - break the algorithm into euler_methods?
+
+# need to sort readme at some point: read this
+# http://stackoverflow.com/questions/10871865/whats-the-best-way-to-edit-githubs-readme-md
