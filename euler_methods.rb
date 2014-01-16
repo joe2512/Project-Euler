@@ -660,23 +660,6 @@ end
 
 
 
-# Given a fraction in the form of a 2 entry array, returns the fraction in its
-# simplest form.
-
-
-def simplify_fraction(fraction)
-  a = fraction[0]
-  b = fraction[1]
-  primes_array(a).each do |i|
-    if a % i == 0 and b % i == 0
-      a /= i
-      b /= i
-      redo
-    end
-  end
-  
-  [a, b]
-end
 
 
 ## Finds the sum of the factorials of the digits of a number.
@@ -1236,18 +1219,51 @@ end
 # puts is_octagon(40)
 # puts is_octagon(65)
 
-## Returns true or false if the given number is a triangle number
 
-def is_triangle(n)
-  sol1 = (-b + Math.sqrt(b ** 2 - 4 * a * (-2 * n))) / (2 * a)
-  sol2 = (-b - Math.sqrt(b ** 2 - 4 * a * (-2 * n))) / (2 * a)
-  if sol1 % 1 == 0 or sol2 % 1 == 0
-    return true
-  else
-    return false
-  end
+## Given two two-element arrays representing fraction, returns one two-element array
+## representing those two fractions added together and simplified.
+
+def add_fraction(fraction1, fraction2)
+  denominator = lowest_common_multiple2(fraction1[1], fraction2[1])
+  multiplier1 = denominator / fraction1[1]
+  multiplier2 = denominator / fraction2[1]
+  fraction1_mult = fraction1.collect { |x| x * multiplier1 }
+  fraction2_mult = fraction2.collect { |x| x * multiplier2 }
+  fraction = [fraction1_mult[0] + fraction2_mult[0], denominator]
+  p fraction
+  simplify_fraction(fraction)
 end
 
+# p add_fraction([5, 6], [4, 6])
+# p add_fraction([5, 7], [8, 11])
+# p add_fraction([2, 3], [1, 6])
+# p add_fraction([1, 3], [4, 9])
+
+# Given a fraction in the form of a 2 entry array, returns the fraction in its
+# simplest form.
+# VERY SLOW FOR BIG NUMBERS
+
+
+# def simplify_fraction(fraction)
+#   a = fraction[0]
+#   b = fraction[1]
+#   primes_array(a).each do |i|
+#     if a % i == 0 and b % i == 0
+#       a /= i
+#       b /= i
+#       redo
+#     end
+#   end
+#   
+#   [a, b]
+# end
+
+## This one is MUCH faster. 
+
+def simplify_fraction(fraction)
+  gcd = greatest_common_divisor(fraction[0], fraction[1])
+  fraction.collect { |x| x / gcd }
+end
 
 
 

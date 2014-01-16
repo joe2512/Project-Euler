@@ -27,29 +27,116 @@
 # polygonal type: triangle, square, pentagonal, hexagonal, heptagonal, and octagonal, 
 # is represented by a different number in the set.
 
+###
+###  Brute force method FAR too slow. Also code is quite messy. Not currently working.
+###
 
 require_relative 'euler_methods.rb'
 
 # 6 figures
-def euler61
-  tri = false
-  squ = false
-  pent = false
-  
-  (466896..466899).each do |i|
-    puts "GO"
-    puts i.to_s[0..0 + 3].to_i
-    puts i.to_s[2..5].to_i
-    puts (i.to_s[4..5] + i.to_s[0..1]).to_i
-    
-#     Add checks for is_triangle... is square.. and so on here
-#     
+def euler61(n)
+
+
+  (10 ** (n - 1)..10 ** n).each do |i|
+#   (812000..813000).each do |i|
+    tri = false
+    squ = false
+    pent = false
+    hex = false
+    hept = false
+    oct = false
+    catch (:done) do
+      puts "AAAA"
+      puts i
+      total = 0
+      (0..n - 2).step(2) do |j|
+      #     prevent trailing zeros counting towards an answer
+	    if i.to_s[j] == '0'
+	      puts "THROW"
+	      throw :done
+	    end
+#       puts j
+#     last iteration need to concat the string from the start
+	    if j == n - 2
+	      current = (i.to_s[j..j + 1] + i.to_s[0..1]).to_i
+	    else
+	      current = i.to_s[j..j + 3].to_i
+        end
+	  
+	  
+        total += current
+        puts current
+        if tri == false
+          if is_triangle(current)
+            tri = true
+            puts "T"
+            if tri == true && squ == true && pent == true && hex == true && hept == true && oct == true
+              return total
+            end
+            next
+          end
+        end
+        if squ == false
+          if is_square(current)
+            squ = true
+            puts "S"
+            if tri == true && squ == true && pent == true && hex == true && hept == true && oct == true
+              return total
+            end
+            next
+          end
+        end
+        if pent == false
+          if is_pentagon(current)
+            pent = true
+            puts "P"
+            if tri == true && squ == true && pent == true && hex == true && hept == true && oct == true
+              return total
+            end
+            next
+          end
+        end
+        if hex == false
+          if is_hexagon(current)
+            hex = true
+            puts "H"
+            if tri == true && squ == true && pent == true && hex == true && hept == true && oct == true
+              return total
+            end
+            next
+          end
+        end
+        if hept == false
+          if is_heptagon(current)
+            hept = true
+            puts "P"
+            if tri == true && squ == true && pent == true && hex == true && hept == true && oct == true
+              return total
+            end
+            next
+          end
+        end
+        if oct == false
+          if is_octagon(current)
+            oct = true
+            puts "P"
+            if tri == true && squ == true && pent == true && hex == true && hept == true && oct == true
+              return total
+            end
+            next
+          end
+        end
+      
+
+      end
+    end
   end
-    
+  return false
 end
  
+n = 10
 
-answer = euler61
+answer = euler61(n)
 
 puts "The answer to Project Euler problem 61 is #{answer}."
 
